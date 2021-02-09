@@ -1,0 +1,20 @@
+//1
+MATCH path=ShortestPath((begin:town {name: "Darjeeling"})-[*]->(dest:peak {name: "Sandakphu"})) RETURN path
+
+//2
+MATCH path=ShortestPath((begin:town {name: "Darjeeling"})-[*]->(dest:peak {name: "Sandakphu"})) 
+WHERE ALL (cond IN RELATIONSHIPS(path) WHERE cond.winter="true")
+RETURN path
+
+//3A
+MATCH paths=(t:town {name:"Darjeeling"})-[r*..5]-(p:peak {name:"Sandakphu"}) RETURN paths ORDER BY distance(t, p)
+//3B
+MATCH (t:town {name:"Darjeeling"})-[r:twowheeler {summer:'true'}]->(any) return r
+
+//4
+MATCH (f0)-[o:ORIGIN]->(a:Airport) RETURN a, count(o) ORDER BY count(o) DESC
+
+//5
+match (:Airport {name:'LAX'})-[:ORIGIN]-(f0:Flight)-[:DESTINATION]-(a:Airport) 
+with f0,a match (f0)-[:ASSIGN]-(t:Ticket) where t.price < 3000
+return a
